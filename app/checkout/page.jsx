@@ -118,7 +118,7 @@ export default function CheckoutPage() {
             if (!verifyRes.ok) throw new Error(verifyData.error)
 
             // Save order to Supabase
-            await fetch('/api/orders', {
+            const orderSaveRes = await fetch('/api/orders', {
               method:  'POST',
               headers: { 'Content-Type': 'application/json' },
               body:    JSON.stringify({
@@ -129,6 +129,8 @@ export default function CheckoutPage() {
                 razorpaySignature: response.razorpay_signature,
               }),
             })
+            const orderSaveData = await orderSaveRes.json()
+            if (!orderSaveRes.ok) throw new Error(orderSaveData.error || 'Order save failed')
 
             clearCart()
             router.push('/orders?success=true')

@@ -56,16 +56,23 @@ export async function POST(request) {
       await db.rpc('decrement_stock', { p_id: item.id, qty: item.qty })
     }
 
-    // Send confirmation email (non-blocking)
+    let emailSent = false
+
+    // Send confirmation email after the order is safely stored.
     if (form.email) {
-      sendOrderConfirmation({
-        to:    form.email,
-        order: { ...order, address: `${form.address}, ${form.city} - ${form.pincode}` },
-        items: orderItems,
-      }).catch(console.error)
+      try {
+        await sendOrderConfirmation({
+          to:    form.email,
+          order: { ...order, address: `${form.address}, ${form.city} - ${form.pincode}` },
+          items: orderItems,
+        })
+        emailSent = true
+      } catch (emailError) {
+        console.error('Order confirmation email error:', emailError)
+      }
     }
 
-    return NextResponse.json({ orderId: order.id }, { status: 201 })
+    return NextResponse.json({ orderId: order.id, emailSent }, { status: 201 })
   } catch (error) {
     console.error('Order creation error:', error)
     return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
