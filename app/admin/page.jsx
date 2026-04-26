@@ -56,14 +56,14 @@ export default function AdminPage() {
   const tdStyle = { padding:'10px 12px', fontSize:13, borderBottom:'1px solid rgba(0,0,0,0.05)', verticalAlign:'middle' }
 
   return (
-    <div style={{ maxWidth:1100, margin:'0 auto', padding:'32px 28px' }}>
+    <div className="admin-page" style={{ maxWidth:1100, margin:'0 auto', padding:'32px 28px' }}>
       <div style={{ marginBottom:28 }}>
         <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:30, margin:'0 0 4px' }}>Admin Dashboard</h1>
         <p style={{ fontSize:13, color:'#6b6b60' }}>Manage your farm store</p>
       </div>
 
       {/* Tabs */}
-      <div style={{ display:'flex', gap:4, marginBottom:24, borderBottom:'1px solid rgba(0,0,0,0.08)' }}>
+      <div className="admin-tabs" style={{ display:'flex', gap:4, marginBottom:24, borderBottom:'1px solid rgba(0,0,0,0.08)' }}>
         {['orders','products','add product'].map(t => (
           <button key={t} onClick={() => setTab(t)} style={{
             padding:'10px 20px', background:'none', border:'none',
@@ -80,7 +80,7 @@ export default function AdminPage() {
           {/* ORDERS TAB */}
           {tab === 'orders' && (
             <div>
-              <div style={{ display:'flex', gap:16, marginBottom:20, flexWrap:'wrap' }}>
+              <div className="admin-stats" style={{ display:'flex', gap:16, marginBottom:20, flexWrap:'wrap' }}>
                 {['pending','paid','processing','dispatched','delivered'].map(s => {
                   const count = orders.filter(o => o.status === s).length
                   return (
@@ -91,7 +91,7 @@ export default function AdminPage() {
                   )
                 })}
               </div>
-              <div style={{ background:'#fff', borderRadius:14, border:'1px solid rgba(0,0,0,0.08)', overflow:'hidden' }}>
+              <div className="table-scroll-card" style={{ background:'#fff', borderRadius:14, border:'1px solid rgba(0,0,0,0.08)', overflow:'hidden' }}>
                 <table style={{ width:'100%', borderCollapse:'collapse' }}>
                   <thead>
                     <tr>
@@ -137,7 +137,7 @@ export default function AdminPage() {
 
           {/* PRODUCTS TAB */}
           {tab === 'products' && (
-            <div style={{ background:'#fff', borderRadius:14, border:'1px solid rgba(0,0,0,0.08)', overflow:'hidden' }}>
+            <div className="table-scroll-card" style={{ background:'#fff', borderRadius:14, border:'1px solid rgba(0,0,0,0.08)', overflow:'hidden' }}>
               <table style={{ width:'100%', borderCollapse:'collapse' }}>
                 <thead>
                   <tr>{['Product','Category','Price','Stock','Active','Featured'].map(h => <th key={h} style={thStyle}>{h}</th>)}</tr>
@@ -169,9 +169,9 @@ export default function AdminPage() {
 
           {/* ADD PRODUCT TAB */}
           {tab === 'add product' && (
-            <div style={{ background:'#fff', borderRadius:14, border:'1px solid rgba(0,0,0,0.08)', padding:28, maxWidth:560 }}>
+            <div className="admin-form-card" style={{ background:'#fff', borderRadius:14, border:'1px solid rgba(0,0,0,0.08)', padding:28, maxWidth:560 }}>
               <h2 style={{ fontFamily:'Playfair Display,serif', fontSize:22, margin:'0 0 20px' }}>Add new product</h2>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
+              <div className="admin-form-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
                 {[
                   { key:'name',        label:'Product name',   placeholder:'e.g. Fresh Spinach' },
                   { key:'price',       label:'Price (Rs.)',    placeholder:'e.g. 45',    type:'number' },

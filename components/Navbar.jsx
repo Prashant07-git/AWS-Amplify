@@ -11,7 +11,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav style={{
+      <nav className="site-nav" style={{
         display:'flex', alignItems:'center', justifyContent:'space-between',
         padding:'14px 28px', background:'#faf6ef',
         borderBottom:'1px solid rgba(45,80,22,0.12)',
@@ -23,13 +23,14 @@ export default function Navbar() {
           </span>
         </Link>
 
-        <div style={{ display:'flex', gap:24 }}>
+        <div className="site-nav-links" style={{ display:'flex', gap:24 }}>
           {[['Shop','/products'],['Our Farm','/#story'],['Seasonal','/products?cat=seasonal-box']].map(([label,href]) => (
             <Link key={label} href={href} className="nav-link">{label}</Link>
           ))}
+          <Link href="/account" className="nav-link mobile-account-link">Account</Link>
         </div>
 
-        <div style={{ display:'flex', gap:12, alignItems:'center' }}>
+        <div className="site-nav-actions" style={{ display:'flex', gap:12, alignItems:'center' }}>
           <Link href="/account" className="nav-link">Account</Link>
           <button onClick={() => setDrawerOpen(true)} style={{
             background:'#2d5016', color:'#fff', border:'none', borderRadius:999,

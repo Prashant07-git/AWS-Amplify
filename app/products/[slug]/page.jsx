@@ -37,13 +37,13 @@ export default async function ProductPage({ params }) {
   const bg    = BG[slug]   || BG.vegetables
 
   return (
-    <div style={{ maxWidth:900, margin:'0 auto', padding:'48px 28px' }}>
+    <div className="product-detail-page" style={{ maxWidth:900, margin:'0 auto', padding:'48px 28px' }}>
       <Link href="/products" style={{ fontSize:13, color:'#6b6b60', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:4, marginBottom:24 }}>
         ← Back to products
       </Link>
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:48, alignItems:'start' }}>
+      <div className="product-detail-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:48, alignItems:'start' }}>
         {/* Image */}
-        <div style={{ borderRadius:20, overflow:'hidden', height:380, background:bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:120, position:'relative' }}>
+        <div className="product-detail-media" style={{ borderRadius:20, overflow:'hidden', height:380, background:bg, display:'flex', alignItems:'center', justifyContent:'center', fontSize:120, position:'relative' }}>
           {product.image_url
             ? <img src={product.image_url} alt={product.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
             : emoji

@@ -38,7 +38,7 @@ export default function ProductCard({ product }) {
   return (
     <Link href={`/products/${product.slug}`} className="prod-card">
       {/* Image */}
-      <div style={{ height:140, display:'flex', alignItems:'center', justifyContent:'center', fontSize:52, background:bg, position:'relative' }}>
+      <div className="prod-card-media" style={{ height:140, display:'flex', alignItems:'center', justifyContent:'center', fontSize:52, background:bg, position:'relative' }}>
         {product.image_url
           ? <img src={product.image_url} alt={product.name} style={{ width:'100%', height:'100%', objectFit:'cover' }} />
           : emoji
@@ -61,7 +61,7 @@ export default function ProductCard({ product }) {
       </div>
 
       {/* Info */}
-      <div style={{ padding:'12px 14px 14px' }}>
+      <div className="prod-card-body" style={{ padding:'12px 14px 14px' }}>
         <div style={{ fontWeight:500, fontSize:14, color:'#1c1c1a', marginBottom:2 }}>{product.name}</div>
         <div style={{ fontSize:12, color:'#6b6b60' }}>{product.unit}</div>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:10 }}>

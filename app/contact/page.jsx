@@ -53,7 +53,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div style={{ maxWidth: 960, margin: '0 auto', padding: '44px 28px 64px' }}>
+    <div className="contact-page" style={{ maxWidth: 960, margin: '0 auto', padding: '44px 28px 64px' }}>
       <div style={{ marginBottom: 30 }}>
         <h1 style={{ fontFamily: 'Playfair Display,serif', fontSize: 36, margin: '0 0 8px' }}>
           Contact Us
@@ -63,9 +63,9 @@ export default function ContactPage() {
         </p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 28, alignItems: 'start' }}>
+      <div className="contact-layout" style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 28, alignItems: 'start' }}>
         <form onSubmit={sendMessage} style={{ background: '#fff', border: '1px solid rgba(0,0,0,0.08)', borderRadius: 14, padding: 24 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+          <div className="contact-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 500, color: '#6b6b60', marginBottom: 6 }}>
                 Full name *

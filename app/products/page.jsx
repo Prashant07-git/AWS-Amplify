@@ -48,7 +48,7 @@ function ProductsContent() {
   )
 
   return (
-    <div style={{ maxWidth:1200, margin:'0 auto', padding:'32px 28px' }}>
+    <div className="products-page" style={{ maxWidth:1200, margin:'0 auto', padding:'32px 28px' }}>
       {/* Header */}
       <div style={{ marginBottom:28 }}>
         <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:36, fontWeight:700, margin:'0 0 6px' }}>
@@ -60,8 +60,8 @@ function ProductsContent() {
       </div>
 
       {/* Filters + Search */}
-      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:24, flexWrap:'wrap', gap:12 }}>
-        <div style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
+      <div className="products-toolbar" style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:24, flexWrap:'wrap', gap:12 }}>
+        <div className="products-filters" style={{ display:'flex', gap:8, flexWrap:'wrap' }}>
           {CATEGORIES.map(cat => (
             <button key={cat.label} onClick={() => setActiveCat(cat.slug)} style={{
               background: activecat === cat.slug ? '#2d5016' : '#e8f0df',
@@ -74,6 +74,7 @@ function ProductsContent() {
           ))}
         </div>
         <input
+          className="products-search"
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search products..."
@@ -96,7 +97,7 @@ function ProductsContent() {
           <p>No products found. Try a different filter!</p>
         </div>
       ) : (
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:18 }}>
+        <div className="product-grid product-grid-large" style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(200px,1fr))', gap:18 }}>
           {filtered.map(p => <ProductCard key={p.id} product={p} />)}
         </div>
       )}

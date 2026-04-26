@@ -6,7 +6,7 @@ export default function Footer() {
 
   return (
     <footer style={{ background:'#2d5016', marginTop:'auto' }}>
-      <div style={{ padding:'40px 28px 24px', display:'grid', gridTemplateColumns:'2fr 1fr 1fr', gap:32 }}>
+      <div className="footer-grid" style={{ padding:'40px 28px 24px', display:'grid', gridTemplateColumns:'2fr 1fr 1fr', gap:32 }}>
         <div>
           <div style={{ fontFamily:'Playfair Display,serif', fontSize:22, fontWeight:700, color:'#fff', marginBottom:10 }}>
             R-R-<span style={{ color:'#c8a96e' }}>Organic</span>
@@ -25,7 +25,7 @@ export default function Footer() {
           {helpLinks.map(([l, h]) => <Link key={l} href={h} className="footer-link">{l}</Link>)}
         </div>
       </div>
-      <div style={{ borderTop:'1px solid rgba(255,255,255,0.1)', padding:'16px 28px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+      <div className="footer-bottom" style={{ borderTop:'1px solid rgba(255,255,255,0.1)', padding:'16px 28px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
         <span style={{ fontSize:12, color:'rgba(255,255,255,0.35)' }}>© 2025 R-R-Organic. All rights reserved.</span>
         <span style={{ fontSize:12, color:'rgba(255,255,255,0.35)' }}>Made with love for honest food</span>
       </div>

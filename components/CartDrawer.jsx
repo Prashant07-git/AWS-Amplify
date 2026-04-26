@@ -12,7 +12,7 @@ export default function CartDrawer({ open, onClose }) {
   return (
     <>
       {open && <div onClick={onClose} style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.3)', zIndex:100, backdropFilter:'blur(2px)' }} />}
-      <div style={{
+      <div className="cart-drawer" style={{
         position:'fixed', top:0, right:0, height:'100vh', width:380,
         background:'#faf6ef', zIndex:101, boxShadow:'-8px 0 32px rgba(0,0,0,0.12)',
         transform: open ? 'translateX(0)' : 'translateX(100%)',

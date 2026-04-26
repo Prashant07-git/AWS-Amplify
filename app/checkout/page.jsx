@@ -175,10 +175,10 @@ export default function CheckoutPage() {
   )
 
   return (
-    <div style={{ maxWidth:860, margin:'0 auto', padding:'40px 28px' }}>
+    <div className="checkout-page" style={{ maxWidth:860, margin:'0 auto', padding:'40px 28px' }}>
       <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:32, marginBottom:32 }}>Checkout</h1>
 
-      <div style={{ display:'grid', gridTemplateColumns:'1fr 380px', gap:32, alignItems:'start' }}>
+      <div className="checkout-grid" style={{ display:'grid', gridTemplateColumns:'1fr 380px', gap:32, alignItems:'start' }}>
 
         {/* Delivery form */}
         <div>
@@ -216,7 +216,7 @@ export default function CheckoutPage() {
         </div>
 
         {/* Order summary */}
-        <div style={{ background:'#fff', borderRadius:16, border:'1px solid rgba(0,0,0,0.08)', padding:24, position:'sticky', top:90 }}>
+        <div className="checkout-summary" style={{ background:'#fff', borderRadius:16, border:'1px solid rgba(0,0,0,0.08)', padding:24, position:'sticky', top:90 }}>
           <h3 style={{ fontFamily:'Playfair Display,serif', fontSize:18, margin:'0 0 16px' }}>Order summary</h3>
 
           {items.map(item => (

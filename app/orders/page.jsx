@@ -42,7 +42,7 @@ function OrdersContent() {
   )
 
   return (
-    <div style={{ maxWidth:760, margin:'0 auto', padding:'40px 28px' }}>
+    <div className="orders-page" style={{ maxWidth:760, margin:'0 auto', padding:'40px 28px' }}>
       {success && (
         <div style={{
           background:'#e8f0df', border:'1px solid #4a7c2f', borderRadius:12,
@@ -77,7 +77,7 @@ function OrdersContent() {
               border:'1px solid rgba(0,0,0,0.08)',
               padding:20, marginBottom:16,
             }}>
-              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'start', marginBottom:12 }}>
+              <div className="order-card-head" style={{ display:'flex', justifyContent:'space-between', alignItems:'start', marginBottom:12 }}>
                 <div>
                   <div style={{ fontWeight:600, fontSize:14 }}>
                     Order #{order.id.slice(0,8).toUpperCase()}
@@ -86,7 +86,7 @@ function OrdersContent() {
                     {new Date(order.created_at).toLocaleDateString('en-IN', { day:'numeric', month:'long', year:'numeric' })}
                   </div>
                 </div>
-                <div style={{ display:'flex', alignItems:'center', gap:12 }}>
+                <div className="order-card-meta" style={{ display:'flex', alignItems:'center', gap:12 }}>
                   <span style={{
                     background: s.bg, color: s.color,
                     fontSize:11, fontWeight:600, padding:'4px 10px',
