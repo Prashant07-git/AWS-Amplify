@@ -4,8 +4,8 @@ import Footer from '@/components/Footer'
 
 export const metadata = {
   title:       'R-R-Organic — Fresh Organic Farm Produce',
-  description: 'Farm-fresh certified organic vegetables, fruits, grains and dairy delivered in 24 hours. Grown on our family farm in Panvel, Maharashtra.',
-  keywords:    'organic vegetables, fresh produce, farm delivery, Panvel, Maharashtra',
+  description: 'Farm-fresh certified organic vegetables, fruits, grains and dairy delivered in 24 hours. Grown on our family farm in Amravati, Maharashtra.',
+  keywords:    'organic vegetables, fresh produce, farm delivery, Amravati, Maharashtra',
 }
 
 export default function RootLayout({ children }) {

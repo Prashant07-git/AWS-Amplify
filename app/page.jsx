@@ -105,7 +105,7 @@ export default async function HomePage() {
             Three generations of<br />honest farming
           </h2>
           <p style={{ fontSize:15, color:'#6b6b60', lineHeight:1.8, marginBottom:28 }}>
-            No shortcuts. No chemicals. Just rich Konkan soil, rainwater, and the kind of patience that comes from loving the land.
+            No shortcuts. No chemicals. Just the goodness of rich Vidarbha black soil., rainwater, and the kind of patience that comes from loving the land.
           </p>
           <div style={{ display:'flex', gap:32 }}>
             {stats.map(([n, l]) => (

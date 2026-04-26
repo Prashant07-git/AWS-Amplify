@@ -138,7 +138,7 @@ export default function ContactPage() {
           <div style={{ fontSize: 13, lineHeight: 1.9 }}>
             <div><strong>Phone:</strong> <a href={`tel:+91${CONTACT_PHONE}`} style={{ color: '#2d5016', fontWeight: 600 }}>{CONTACT_PHONE}</a></div>
             <div><strong>Email:</strong> <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: '#2d5016', fontWeight: 600 }}>{CONTACT_EMAIL}</a></div>
-            <div><strong>Location:</strong> Panvel, Maharashtra</div>
+            <div><strong>Location:</strong> Amravati, Maharashtra</div>
             <div><strong>Delivery:</strong> Farm-fresh local orders</div>
             <div><strong>Response:</strong> Within 24 hours</div>
           </div>
