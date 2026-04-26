@@ -1,6 +1,5 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase'
 
 const STATUS_OPTIONS = ['pending','paid','processing','dispatched','delivered','cancelled']
 const STATUS_COLORS  = {
@@ -9,6 +8,10 @@ const STATUS_COLORS  = {
 }
 
 export default function AdminPage() {
+  const [isAdmin,  setIsAdmin]  = useState(false)
+  const [checking, setChecking] = useState(true)
+  const [login,    setLogin]    = useState({ username:'', password:'' })
+  const [authError,setAuthError]= useState('')
   const [tab,      setTab]      = useState('orders')
   const [orders,   setOrders]   = useState([])
   const [products, setProducts] = useState([])
@@ -16,36 +19,106 @@ export default function AdminPage() {
   const [loading,  setLoading]  = useState(true)
   const [newProd,  setNewProd]  = useState({ name:'', slug:'', description:'', price:'', unit:'', stock:'', category_id:'' })
 
-  useEffect(() => { loadAll() }, [])
+  useEffect(() => { checkSession() }, [])
+
+  async function checkSession() {
+    setChecking(true)
+    const response = await fetch('/api/admin/session')
+    const data = await response.json()
+
+    if (data.authenticated) {
+      setIsAdmin(true)
+      await loadAll()
+    } else {
+      setLoading(false)
+    }
+
+    setChecking(false)
+  }
+
+  async function handleLogin(event) {
+    event.preventDefault()
+    setAuthError('')
+    setLoading(true)
+
+    const response = await fetch('/api/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(login),
+    })
+    const data = await response.json()
+
+    if (!response.ok) {
+      setAuthError(data.error || 'Could not sign in.')
+      setLoading(false)
+      return
+    }
+
+    setIsAdmin(true)
+    await loadAll()
+  }
+
+  async function handleLogout() {
+    await fetch('/api/admin/logout', { method: 'POST' })
+    setIsAdmin(false)
+    setOrders([])
+    setProducts([])
+    setCats([])
+  }
 
   async function loadAll() {
     setLoading(true)
-    const [{ data: o }, { data: p }, { data: c }] = await Promise.all([
-      supabase.from('orders').select('*, order_items(*)').order('created_at', { ascending:false }),
-      supabase.from('products').select('*, categories(name)').order('created_at', { ascending:false }),
-      supabase.from('categories').select('*'),
-    ])
-    setOrders(o || [])
-    setProducts(p || [])
-    setCats(c || [])
+    const response = await fetch('/api/admin/data')
+    const data = await response.json()
+
+    if (!response.ok) {
+      setAuthError(data.error || 'Could not load admin data.')
+      setIsAdmin(false)
+      setLoading(false)
+      return
+    }
+
+    setOrders(data.orders || [])
+    setProducts(data.products || [])
+    setCats(data.categories || [])
     setLoading(false)
   }
 
   async function updateOrderStatus(orderId, status) {
-    await supabase.from('orders').update({ status }).eq('id', orderId)
+    const response = await fetch('/api/admin/orders', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, status }),
+    })
+
+    if (!response.ok) return
     setOrders(os => os.map(o => o.id === orderId ? { ...o, status } : o))
   }
 
   async function toggleProduct(id, field, val) {
-    await supabase.from('products').update({ [field]: val }).eq('id', id)
+    const response = await fetch('/api/admin/products', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, field, value: val }),
+    })
+
+    if (!response.ok) return
     setProducts(ps => ps.map(p => p.id === id ? { ...p, [field]: val } : p))
   }
 
   async function addProduct() {
     if (!newProd.name || !newProd.price) return
-    const slug = newProd.name.toLowerCase().replace(/\s+/g, '-')
-    const { data } = await supabase.from('products').insert({ ...newProd, slug, price: parseFloat(newProd.price), stock: parseInt(newProd.stock) || 0 }).select('*, categories(name)').single()
-    if (data) { setProducts(ps => [data, ...ps]); setNewProd({ name:'', slug:'', description:'', price:'', unit:'', stock:'', category_id:'' }) }
+    const response = await fetch('/api/admin/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newProd),
+    })
+    const data = await response.json()
+
+    if (response.ok && data.product) {
+      setProducts(ps => [data.product, ...ps])
+      setNewProd({ name:'', slug:'', description:'', price:'', unit:'', stock:'', category_id:'' })
+    }
   }
 
   const inputStyle = {
@@ -55,11 +128,70 @@ export default function AdminPage() {
   const thStyle = { textAlign:'left', fontSize:11, fontWeight:600, color:'#6b6b60', letterSpacing:'0.06em', textTransform:'uppercase', padding:'8px 12px', borderBottom:'1px solid rgba(0,0,0,0.08)' }
   const tdStyle = { padding:'10px 12px', fontSize:13, borderBottom:'1px solid rgba(0,0,0,0.05)', verticalAlign:'middle' }
 
+  if (checking) return (
+    <div style={{ maxWidth:420, margin:'80px auto', padding:'0 28px', color:'#6b6b60' }}>
+      Checking admin access...
+    </div>
+  )
+
+  if (!isAdmin) return (
+    <div style={{ maxWidth:420, margin:'80px auto', padding:'0 28px' }}>
+      <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:30, margin:'0 0 8px' }}>Admin Login</h1>
+      <p style={{ fontSize:14, color:'#6b6b60', lineHeight:1.6, marginBottom:24 }}>
+        Sign in with the private farmer/admin account to manage products and orders.
+      </p>
+
+      <form onSubmit={handleLogin} style={{ background:'#fff', border:'1px solid rgba(0,0,0,0.08)', borderRadius:14, padding:24 }}>
+        <div style={{ marginBottom:14 }}>
+          <label style={{ fontSize:12, fontWeight:500, color:'#6b6b60', display:'block', marginBottom:5 }}>Username</label>
+          <input
+            value={login.username}
+            onChange={e => setLogin(l => ({ ...l, username: e.target.value }))}
+            style={inputStyle}
+            autoComplete="username"
+          />
+        </div>
+        <div style={{ marginBottom:14 }}>
+          <label style={{ fontSize:12, fontWeight:500, color:'#6b6b60', display:'block', marginBottom:5 }}>Password</label>
+          <input
+            type="password"
+            value={login.password}
+            onChange={e => setLogin(l => ({ ...l, password: e.target.value }))}
+            style={inputStyle}
+            autoComplete="current-password"
+          />
+        </div>
+
+        {authError && (
+          <div style={{ marginBottom:14, padding:'10px 12px', background:'#fde8e8', color:'#a32d2d', borderRadius:8, fontSize:13 }}>
+            {authError}
+          </div>
+        )}
+
+        <button type="submit" disabled={loading} style={{
+          width:'100%', background: loading ? '#6b9e52' : '#2d5016', color:'#fff',
+          border:'none', borderRadius:999, padding:'12px 18px',
+          fontSize:14, fontWeight:600, cursor: loading ? 'not-allowed' : 'pointer',
+        }}>
+          {loading ? 'Signing in...' : 'Sign in'}
+        </button>
+      </form>
+    </div>
+  )
+
   return (
     <div className="admin-page" style={{ maxWidth:1100, margin:'0 auto', padding:'32px 28px' }}>
-      <div style={{ marginBottom:28 }}>
-        <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:30, margin:'0 0 4px' }}>Admin Dashboard</h1>
-        <p style={{ fontSize:13, color:'#6b6b60' }}>Manage your farm store</p>
+      <div style={{ marginBottom:28, display:'flex', justifyContent:'space-between', alignItems:'center', gap:16 }}>
+        <div>
+          <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:30, margin:'0 0 4px' }}>Admin Dashboard</h1>
+          <p style={{ fontSize:13, color:'#6b6b60' }}>Manage your farm store</p>
+        </div>
+        <button onClick={handleLogout} style={{
+          background:'#fff', color:'#6b6b60', border:'1px solid rgba(0,0,0,0.12)',
+          borderRadius:999, padding:'8px 14px', fontSize:13, cursor:'pointer',
+        }}>
+          Sign out
+        </button>
       </div>
 
       {/* Tabs */}
