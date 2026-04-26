@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Footer() {
   const shopLinks = [['All Products','/products'],['Vegetables','/products?cat=vegetables'],['Fruits','/products?cat=fruits'],['Seasonal Box','/products?cat=seasonal-box']]
-  const helpLinks = [['My Orders','/orders'],['Shipping Info','/#shipping'],['Returns','/#returns'],['Contact Us','/#contact']]
+  const helpLinks = [['My Orders','/orders'],['Shipping Info','/#shipping'],['Returns','/#returns'],['Contact Us','/contact']]
 
   return (
     <footer style={{ background:'#2d5016', marginTop:'auto' }}>

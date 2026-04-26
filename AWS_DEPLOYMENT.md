@@ -48,6 +48,8 @@ NEXT_PUBLIC_RAZORPAY_KEY_ID=your_razorpay_key_id
 RAZORPAY_KEY_ID=your_razorpay_key_id
 RAZORPAY_KEY_SECRET=your_razorpay_key_secret
 RESEND_API_KEY=your_resend_api_key
+RESEND_FROM_EMAIL=R-R-Organic <orders@yourdomain.com>
+CONTACT_TO_EMAIL=you@example.com
 NEXT_PUBLIC_SITE_URL=https://your-amplify-domain
 ```
 

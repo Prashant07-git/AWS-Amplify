@@ -26,7 +26,7 @@ export default function CheckoutPage() {
   const router = useRouter()
   const [user,    setUser]    = useState(null)
   const [profile, setProfile] = useState(null)
-  const [form,    setForm]    = useState({ name:'', phone:'', address:'', city:'Panvel', pincode:'' })
+  const [form,    setForm]    = useState({ name:'', email:'', phone:'', address:'', city:'Panvel', pincode:'' })
   const [loading, setLoading] = useState(false)
   const [error,   setError]   = useState('')
 
@@ -38,12 +38,14 @@ export default function CheckoutPage() {
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return
       setUser(data.user)
+      setForm(current => ({ ...current, email: data.user.email || '' }))
       const { data: prof } = await supabase
         .from('profiles').select('*').eq('id', data.user.id).single()
       if (prof) {
         setProfile(prof)
         setForm({
           name:    prof.full_name || '',
+          email:   data.user.email || '',
           phone:   prof.phone    || '',
           address: prof.address  || '',
           city:    prof.city     || 'Panvel',
@@ -58,6 +60,7 @@ export default function CheckoutPage() {
   async function handleCheckout() {
     // Validate form
     if (!form.name)    { setError('Please enter your full name.');    return }
+    if (!form.email)   { setError('Please enter your email address.'); return }
     if (!form.phone)   { setError('Please enter your phone number.'); return }
     if (!form.address) { setError('Please enter your address.');      return }
     if (!form.pincode) { setError('Please enter your pincode.');      return }
@@ -93,7 +96,7 @@ export default function CheckoutPage() {
         prefill: {
           name:    form.name,
           contact: form.phone,
-          email:   user?.email || '',
+          email:   form.email || user?.email || '',
         },
         theme: { color: '#2d5016' },
         config: { display: { blocks: { utib: { name: 'Pay via UPI', instruments: [{ method: 'upi', flows: ['collect', 'intent', 'qr'] }] }, other: { name: 'Cards & Net Banking', instruments: [{ method: 'card' }, { method: 'netbanking' }, { method: 'wallet' }] } }, sequence: ['block.utib', 'block.other'], preferences: { show_default_blocks: false } } },
@@ -189,6 +192,7 @@ export default function CheckoutPage() {
 
           {[
             { key:'name',    label:'Full name',        type:'text', placeholder:'Your full name',      required:true },
+            { key:'email',   label:'Email',            type:'email', placeholder:'you@example.com',     required:true },
             { key:'phone',   label:'WhatsApp / Phone', type:'tel',  placeholder:'+91 9876543210',      required:true },
             { key:'address', label:'Full address',     type:'text', placeholder:'House no, street, area', required:true },
             { key:'city',    label:'City',             type:'text', placeholder:'Panvel',               required:false },

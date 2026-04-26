@@ -57,19 +57,12 @@ export async function POST(request) {
     }
 
     // Send confirmation email (non-blocking)
-    if (userId) {
-      const { data: profile } = await db
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-      if (profile?.email || form.email) {
-        sendOrderConfirmation({
-          to:    form.email || profile?.email,
-          order: { ...order, address: `${form.address}, ${form.city} - ${form.pincode}` },
-          items: orderItems,
-        }).catch(console.error)
-      }
+    if (form.email) {
+      sendOrderConfirmation({
+        to:    form.email,
+        order: { ...order, address: `${form.address}, ${form.city} - ${form.pincode}` },
+        items: orderItems,
+      }).catch(console.error)
     }
 
     return NextResponse.json({ orderId: order.id }, { status: 201 })
