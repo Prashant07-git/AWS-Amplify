@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useCartStore } from '@/lib/cart-store'
 import CartDrawer from './CartDrawer'
 
@@ -8,6 +8,15 @@ export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const getItemCount = useCartStore(s => s.getItemCount)
   const itemCount    = getItemCount()
+
+  useEffect(() => {
+    function handleOpenCart() {
+      setDrawerOpen(true)
+    }
+
+    window.addEventListener('harvestco:open-cart', handleOpenCart)
+    return () => window.removeEventListener('harvestco:open-cart', handleOpenCart)
+  }, [])
 
   return (
     <>

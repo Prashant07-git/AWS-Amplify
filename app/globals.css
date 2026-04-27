@@ -422,3 +422,55 @@ img {
     gap: 6px !important;
   }
 }
+
+.cart-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 120;
+  width: min(360px, calc(100vw - 32px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(45, 80, 22, 0.14);
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+}
+
+.cart-toast-title {
+  color: #1c1c1a;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.cart-toast-subtitle {
+  color: #6b6b60;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.cart-toast-action {
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 999px;
+  background: #2d5016;
+  color: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 12px;
+}
+
+@media (max-width: 720px) {
+  .cart-toast {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    width: auto;
+    border-radius: 12px;
+  }
+}

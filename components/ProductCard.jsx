@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { useCartStore } from '@/lib/cart-store'
 import { useState } from 'react'
+import { notifyCartAdded } from './CartToast'
 
 const EMOJI = {
   vegetables:      '🥦',
@@ -31,6 +32,7 @@ export default function ProductCard({ product }) {
   function handleAdd(e) {
     e.preventDefault()
     addItem({ ...product, emoji })
+    notifyCartAdded(product.name)
     setAdded(true)
     setTimeout(() => setAdded(false), 1200)
   }

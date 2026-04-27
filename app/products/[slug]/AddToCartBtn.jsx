@@ -2,6 +2,7 @@
 import { useCartStore } from '@/lib/cart-store'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { notifyCartAdded } from '@/components/CartToast'
 
 export default function AddToCartBtn({ product, emoji }) {
   const addItem = useCartStore(s => s.addItem)
@@ -10,6 +11,7 @@ export default function AddToCartBtn({ product, emoji }) {
 
   function handleAdd() {
     addItem({ ...product, emoji })
+    notifyCartAdded(product.name)
     setAdded(true)
     setTimeout(() => setAdded(false), 2000)
   }

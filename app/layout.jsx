@@ -1,6 +1,7 @@
 import './globals.css'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import CartToast from '@/components/CartToast'
 
 export const metadata = {
   title:       'R-R-Organic — Fresh Organic Farm Produce',
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
         <main style={{ flex:1 }}>
           {children}
         </main>
+        <CartToast />
         <Footer />
       </body>
     </html>
