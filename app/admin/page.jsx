@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const STATUS_OPTIONS = ['pending','paid','processing','dispatched','delivered','cancelled']
 const STATUS_COLORS  = {
@@ -8,6 +8,8 @@ const STATUS_COLORS  = {
 }
 
 export default function AdminPage() {
+  const knownOrderIds = useRef(new Set())
+  const hasLoadedOrders = useRef(false)
   const [isAdmin,  setIsAdmin]  = useState(false)
   const [checking, setChecking] = useState(true)
   const [login,    setLogin]    = useState({ username:'', password:'' })
@@ -17,9 +19,21 @@ export default function AdminPage() {
   const [products, setProducts] = useState([])
   const [cats,     setCats]     = useState([])
   const [loading,  setLoading]  = useState(true)
+  const [liveAlert, setLiveAlert] = useState('')
+  const [lastUpdated, setLastUpdated] = useState(null)
   const [newProd,  setNewProd]  = useState({ name:'', slug:'', description:'', price:'', unit:'', stock:'', category_id:'' })
 
   useEffect(() => { checkSession() }, [])
+
+  useEffect(() => {
+    if (!isAdmin) return
+
+    const intervalId = window.setInterval(() => {
+      loadAll({ silent: true, detectNewOrders: true })
+    }, 20000)
+
+    return () => window.clearInterval(intervalId)
+  }, [isAdmin])
 
   async function checkSession() {
     setChecking(true)
@@ -67,10 +81,15 @@ export default function AdminPage() {
     setOrders([])
     setProducts([])
     setCats([])
+    setLiveAlert('')
+    knownOrderIds.current = new Set()
+    hasLoadedOrders.current = false
   }
 
-  async function loadAll() {
-    setLoading(true)
+  async function loadAll(options = {}) {
+    const { silent = false, detectNewOrders = false } = options
+    if (!silent) setLoading(true)
+
     const response = await fetch('/api/admin/data')
     const data = await response.json()
 
@@ -81,10 +100,35 @@ export default function AdminPage() {
       return
     }
 
-    setOrders(data.orders || [])
+    const nextOrders = data.orders || []
+
+    if (detectNewOrders && hasLoadedOrders.current) {
+      const newOrders = nextOrders.filter(order => !knownOrderIds.current.has(order.id))
+      if (newOrders.length > 0) {
+        const latestOrder = newOrders[0]
+        setLiveAlert(`New order received: #${latestOrder.id.slice(0, 8).toUpperCase()} for Rs.${latestOrder.total}`)
+
+        if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+          new Notification('New R-R-Organic order', {
+            body: `Order #${latestOrder.id.slice(0, 8).toUpperCase()} for Rs.${latestOrder.total}`,
+          })
+        }
+      }
+    }
+
+    knownOrderIds.current = new Set(nextOrders.map(order => order.id))
+    hasLoadedOrders.current = true
+
+    setOrders(nextOrders)
     setProducts(data.products || [])
     setCats(data.categories || [])
+    setLastUpdated(new Date())
     setLoading(false)
+  }
+
+  async function enableBrowserAlerts() {
+    if (typeof window === 'undefined' || !('Notification' in window)) return
+    await Notification.requestPermission()
   }
 
   async function updateOrderStatus(orderId, status) {
@@ -187,15 +231,52 @@ export default function AdminPage() {
       <div style={{ marginBottom:28, display:'flex', justifyContent:'space-between', alignItems:'center', gap:16 }}>
         <div>
           <h1 style={{ fontFamily:'Playfair Display,serif', fontSize:30, margin:'0 0 4px' }}>Admin Dashboard</h1>
-          <p style={{ fontSize:13, color:'#6b6b60' }}>Manage your farm store</p>
+          <p style={{ fontSize:13, color:'#6b6b60' }}>
+            Manage your farm store
+            {lastUpdated && (
+              <span> · Updated {lastUpdated.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' })}</span>
+            )}
+          </p>
         </div>
-        <button onClick={handleLogout} style={{
-          background:'#fff', color:'#6b6b60', border:'1px solid rgba(0,0,0,0.12)',
-          borderRadius:999, padding:'8px 14px', fontSize:13, cursor:'pointer',
-        }}>
-          Sign out
-        </button>
+        <div style={{ display:'flex', gap:8, flexWrap:'wrap', justifyContent:'flex-end' }}>
+          <button onClick={() => loadAll({ silent: false })} style={{
+            background:'#e8f0df', color:'#2d5016', border:'none',
+            borderRadius:999, padding:'8px 14px', fontSize:13, cursor:'pointer',
+          }}>
+            Refresh
+          </button>
+          {typeof window !== 'undefined' && 'Notification' in window && Notification.permission !== 'granted' && (
+            <button onClick={enableBrowserAlerts} style={{
+              background:'#fff', color:'#2d5016', border:'1px solid rgba(45,80,22,0.18)',
+              borderRadius:999, padding:'8px 14px', fontSize:13, cursor:'pointer',
+            }}>
+              Enable alerts
+            </button>
+          )}
+          <button onClick={handleLogout} style={{
+            background:'#fff', color:'#6b6b60', border:'1px solid rgba(0,0,0,0.12)',
+            borderRadius:999, padding:'8px 14px', fontSize:13, cursor:'pointer',
+          }}>
+            Sign out
+          </button>
+        </div>
       </div>
+
+      {liveAlert && (
+        <div style={{
+          background:'#e8f0df', border:'1px solid #4a7c2f', color:'#2d5016',
+          borderRadius:12, padding:'12px 16px', marginBottom:18,
+          display:'flex', justifyContent:'space-between', alignItems:'center', gap:12,
+        }}>
+          <span style={{ fontSize:14, fontWeight:600 }}>{liveAlert}</span>
+          <button onClick={() => setLiveAlert('')} style={{
+            background:'none', border:'none', color:'#2d5016',
+            cursor:'pointer', fontSize:18, lineHeight:1,
+          }}>
+            x
+          </button>
+        </div>
+      )}
 
       {/* Tabs */}
       <div className="admin-tabs" style={{ display:'flex', gap:4, marginBottom:24, borderBottom:'1px solid rgba(0,0,0,0.08)' }}>

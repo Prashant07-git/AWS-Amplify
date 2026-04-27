@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { verifyRazorpaySignature } from '@/lib/razorpay'
 import { sendOrderConfirmation } from '@/lib/email'
+import { sendAdminOrderTelegram } from '@/lib/telegram'
 
 // POST /api/orders - save order after successful payment
 export async function POST(request) {
@@ -57,6 +58,7 @@ export async function POST(request) {
     }
 
     let emailSent = false
+    let telegramSent = false
 
     // Send confirmation email after the order is safely stored.
     if (form.email) {
@@ -72,7 +74,17 @@ export async function POST(request) {
       }
     }
 
-    return NextResponse.json({ orderId: order.id, emailSent }, { status: 201 })
+    try {
+      telegramSent = await sendAdminOrderTelegram({
+        order,
+        form,
+        items: orderItems,
+      })
+    } catch (telegramError) {
+      console.error('Telegram admin notification error:', telegramError)
+    }
+
+    return NextResponse.json({ orderId: order.id, emailSent, telegramSent }, { status: 201 })
   } catch (error) {
     console.error('Order creation error:', error)
     return NextResponse.json({ error: 'Failed to create order' }, { status: 500 })
