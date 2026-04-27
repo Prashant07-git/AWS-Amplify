@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase'
 import ProductCard from '@/components/ProductCard'
+import HeroCarousel from '@/components/HeroCarousel'
 import Link from 'next/link'
 
 async function getFeaturedProducts() {
@@ -53,6 +54,7 @@ export default async function HomePage() {
           <div style={{ width:240, height:240, borderRadius:'50%', background:'linear-gradient(135deg,#c8e6b0,#88c057)', display:'flex', alignItems:'center', justifyContent:'center' }}>
             <div style={{ width:170, height:170, borderRadius:'50%', background:'linear-gradient(135deg,#4a7c2f,#2d5016)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:80 }}>🌿</div>
           </div>
+          <HeroCarousel />
           <div style={{ position:'absolute', top:36, right:36, background:'#fff', borderRadius:12, padding:'12px 16px', boxShadow:'0 4px 16px rgba(0,0,0,0.1)' }}>
             <div style={{ fontFamily:'Playfair Display,serif', fontSize:22, fontWeight:700, color:'#2d5016' }}>200+</div>
             <div style={{ fontSize:12, color:'#6b6b60', marginTop:2 }}>Happy customers</div>
