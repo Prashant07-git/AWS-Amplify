@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import InstagramLink from './InstagramLink'
 
 export default function Footer() {
   const shopLinks = [['All Products','/products'],['Vegetables','/products?cat=vegetables'],['Fruits','/products?cat=fruits'],['Seasonal Box','/products?cat=seasonal-box']]
@@ -12,9 +13,12 @@ export default function Footer() {
             R-R-<span style={{ color:'#c8a96e' }}>Organic</span>
           </div>
           <p style={{ fontSize:13, color:'rgba(255,255,255,0.6)', lineHeight:1.7, maxWidth:260 }}>
-            Three generations of honest farming. No chemicals, no shortcuts — just the goodness of rich Vidarbha black soil.
+            Three generations of honest farming. No chemicals, no shortcuts - just the goodness of rich Vidarbha black soil.
           </p>
-          <p style={{ fontSize:12, color:'rgba(255,255,255,0.4)', marginTop:12 }}>Amravati, Maharashtra · India</p>
+          <p style={{ fontSize:12, color:'rgba(255,255,255,0.4)', marginTop:12 }}>Amravati, Maharashtra, India</p>
+          <div style={{ marginTop:16 }}>
+            <InstagramLink label="Follow on Instagram" showHandle variant="footer" />
+          </div>
         </div>
         <div>
           <div style={{ fontSize:11, fontWeight:600, letterSpacing:'0.1em', color:'#c8a96e', textTransform:'uppercase', marginBottom:14 }}>Shop</div>

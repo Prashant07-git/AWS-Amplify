@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { useCartStore } from '@/lib/cart-store'
 import CartDrawer from './CartDrawer'
+import InstagramLink from './InstagramLink'
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -36,10 +37,12 @@ export default function Navbar() {
           {[['Shop','/products'],['Our Farm','/#story'],['Seasonal','/products?cat=seasonal-box']].map(([label,href]) => (
             <Link key={label} href={href} className="nav-link">{label}</Link>
           ))}
+          <InstagramLink label="Instagram" variant="nav" className="mobile-instagram-link" />
           <Link href="/account" className="nav-link mobile-account-link">Account</Link>
         </div>
 
         <div className="site-nav-actions" style={{ display:'flex', gap:12, alignItems:'center' }}>
+          <InstagramLink label="Instagram" variant="nav" className="desktop-instagram-link" />
           <Link href="/account" className="nav-link">Account</Link>
           <button onClick={() => setDrawerOpen(true)} style={{
             background:'#2d5016', color:'#fff', border:'none', borderRadius:999,

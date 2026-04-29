@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import ProductCard from '@/components/ProductCard'
 import HeroCarousel from '@/components/HeroCarousel'
+import InstagramLink from '@/components/InstagramLink'
 import Link from 'next/link'
 
 async function getFeaturedProducts() {
@@ -109,6 +110,9 @@ export default async function HomePage() {
           <p style={{ fontSize:15, color:'#6b6b60', lineHeight:1.8, marginBottom:28 }}>
             No shortcuts. No chemicals. Just the goodness of rich Vidarbha black soil., rainwater, and the kind of patience that comes from loving the land.
           </p>
+          <div style={{ marginBottom:24 }}>
+            <InstagramLink label="Follow our farm" showHandle variant="story" />
+          </div>
           <div className="stats-row" style={{ display:'flex', gap:32 }}>
             {stats.map(([n, l]) => (
               <div key={l} style={{ textAlign:'center' }}>

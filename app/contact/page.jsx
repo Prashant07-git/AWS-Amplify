@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import InstagramLink from '@/components/InstagramLink'
 
 const CONTACT_PHONE = '9082727526'
 const CONTACT_EMAIL = 'prashantvasukar@gmail.com'
@@ -138,6 +139,9 @@ export default function ContactPage() {
           <div style={{ fontSize: 13, lineHeight: 1.9 }}>
             <div><strong>Phone:</strong> <a href={`tel:+91${CONTACT_PHONE}`} style={{ color: '#2d5016', fontWeight: 600 }}>{CONTACT_PHONE}</a></div>
             <div><strong>Email:</strong> <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: '#2d5016', fontWeight: 600 }}>{CONTACT_EMAIL}</a></div>
+            <div style={{ marginTop: 8 }}>
+              <InstagramLink label="Instagram" showHandle variant="contact" />
+            </div>
             <div><strong>Location:</strong> Amravati, Maharashtra</div>
             <div><strong>Delivery:</strong> Farm-fresh local orders</div>
             <div><strong>Response:</strong> Within 24 hours</div>
