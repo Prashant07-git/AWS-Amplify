@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase'
+import { formatINR } from '@/lib/format-money'
 import AddToCartBtn from './AddToCartBtn'
 import Link from 'next/link'
 
@@ -64,7 +65,7 @@ export default async function ProductPage({ params }) {
           </div>
           <p style={{ fontSize:15, color:'#6b6b60', lineHeight:1.8, marginBottom:28 }}>{product.description}</p>
           <div style={{ display:'flex', alignItems:'baseline', gap:8, marginBottom:28 }}>
-            <span style={{ fontFamily:'Playfair Display,serif', fontSize:36, fontWeight:700, color:'#2d5016' }}>₹{product.price}</span>
+            <span style={{ fontFamily:'Playfair Display,serif', fontSize:36, fontWeight:700, color:'#2d5016' }}>{formatINR(product.price)}</span>
             <span style={{ fontSize:14, color:'#6b6b60' }}>{product.unit}</span>
           </div>
 

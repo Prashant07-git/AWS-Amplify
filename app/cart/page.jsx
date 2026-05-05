@@ -1,12 +1,18 @@
 'use client'
 import { useCartStore } from '@/lib/cart-store'
+import { formatINR } from '@/lib/format-money'
 import Link from 'next/link'
 
 export default function CartPage() {
   const { items, updateQty, removeItem } = useCartStore()
-  const subtotal = items.reduce((s, i) => s + i.price * i.quantity, 0)
+  const subtotal = items.reduce((s, i) => s + Number(i.price) * i.qty, 0)
   const delivery = subtotal >= 500 ? 0 : 49
   const total = subtotal + delivery
+
+  function isAtStockLimit(item) {
+    const maxQty = Number(item.stock)
+    return maxQty > 0 && item.qty >= maxQty
+  }
 
   if (items.length === 0) {
     return (
@@ -36,18 +42,18 @@ export default function CartPage() {
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium text-[#1c1c1a] mb-0.5">{item.name}</h3>
                 <p className="text-xs text-[#6b6b60] mb-2">{item.unit}</p>
-                <p className="font-serif font-semibold text-[var(--green)]">₹{item.price}</p>
+                <p className="font-serif font-semibold text-[var(--green)]">{formatINR(item.price)}</p>
               </div>
               <div className="flex flex-col items-end gap-3">
                 <button onClick={() => removeItem(item.id)} className="text-xs text-red-400 hover:text-red-600">
                   Remove
                 </button>
                 <div className="flex items-center gap-2 bg-[var(--green-light)] rounded-full px-3 py-1.5">
-                  <button onClick={() => updateQty(item.id, item.quantity - 1)} className="text-[var(--green)] font-bold">−</button>
-                  <span className="text-sm font-medium text-[var(--green)] w-5 text-center">{item.quantity}</span>
-                  <button onClick={() => updateQty(item.id, item.quantity + 1)} className="text-[var(--green)] font-bold">+</button>
+                  <button onClick={() => updateQty(item.id, item.qty - 1)} className="text-[var(--green)] font-bold">-</button>
+                  <span className="text-sm font-medium text-[var(--green)] w-5 text-center">{item.qty}</span>
+                  <button onClick={() => updateQty(item.id, item.qty + 1)} disabled={isAtStockLimit(item)} className="text-[var(--green)] font-bold disabled:opacity-40">+</button>
                 </div>
-                <p className="text-sm font-semibold text-[#1c1c1a]">₹{item.price * item.quantity}</p>
+                <p className="text-sm font-semibold text-[#1c1c1a]">{formatINR(Number(item.price) * item.qty)}</p>
               </div>
             </div>
           ))}
@@ -59,22 +65,22 @@ export default function CartPage() {
           <div className="space-y-3 text-sm">
             <div className="flex justify-between text-[#6b6b60]">
               <span>Subtotal</span>
-              <span className="font-medium text-[#1c1c1a]">₹{subtotal}</span>
+              <span className="font-medium text-[#1c1c1a]">{formatINR(subtotal)}</span>
             </div>
             <div className="flex justify-between text-[#6b6b60]">
               <span>Delivery</span>
               <span className={delivery === 0 ? 'text-[var(--green)] font-medium' : 'font-medium text-[#1c1c1a]'}>
-                {delivery === 0 ? 'Free' : `₹${delivery}`}
+                {delivery === 0 ? 'Free' : formatINR(delivery)}
               </span>
             </div>
             {subtotal < 500 && (
               <p className="text-xs text-[var(--green-mid)] bg-[var(--green-light)] rounded-lg p-2">
-                Add ₹{500 - subtotal} more for free delivery
+                Add {formatINR(500 - subtotal)} more for free delivery
               </p>
             )}
             <div className="border-t border-[#f0ece4] pt-3 flex justify-between font-semibold">
               <span>Total</span>
-              <span className="font-serif text-xl text-[var(--green)]">₹{total}</span>
+              <span className="font-serif text-xl text-[var(--green)]">{formatINR(total)}</span>
             </div>
           </div>
           <Link

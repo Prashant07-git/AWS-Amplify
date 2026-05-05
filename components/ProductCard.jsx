@@ -1,7 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useCartStore } from '@/lib/cart-store'
-import { useState } from 'react'
+import { formatINR } from '@/lib/format-money'
 import { notifyCartAdded } from './CartToast'
 
 const EMOJI = {
@@ -22,19 +22,29 @@ const BG = {
 }
 
 export default function ProductCard({ product }) {
-  const addItem = useCartStore(s => s.addItem)
-  const [added, setAdded] = useState(false)
+  const addItem   = useCartStore(s => s.addItem)
+  const updateQty = useCartStore(s => s.updateQty)
+  const cartItem  = useCartStore(s => s.items.find(i => i.id === product.id))
 
   const slug  = product.categories?.slug || 'vegetables'
   const emoji = EMOJI[slug] || '🌱'
   const bg    = BG[slug]   || BG.vegetables
+  const qty   = cartItem?.qty || 0
+  const isAtStockLimit = product.stock > 0 && qty >= product.stock
 
   function handleAdd(e) {
     e.preventDefault()
+    e.stopPropagation()
+    if (product.stock === 0 || isAtStockLimit) return
+
     addItem({ ...product, emoji })
     notifyCartAdded(product.name)
-    setAdded(true)
-    setTimeout(() => setAdded(false), 1200)
+  }
+
+  function handleDecrease(e) {
+    e.preventDefault()
+    e.stopPropagation()
+    updateQty(product.id, qty - 1)
   }
 
   return (
@@ -68,19 +78,19 @@ export default function ProductCard({ product }) {
         <div style={{ fontSize:12, color:'#6b6b60' }}>{product.unit}</div>
         <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:10 }}>
           <span style={{ fontFamily:'Playfair Display,serif', fontSize:17, fontWeight:600, color:'#2d5016' }}>
-            ₹{product.price}
+            {formatINR(product.price)}
           </span>
-          <button onClick={handleAdd} disabled={product.stock === 0} style={{
-            width:30, height:30, borderRadius:'50%',
-            background: added ? '#c8a96e' : '#2d5016',
-            color:'#fff', border:'none', cursor: product.stock === 0 ? 'not-allowed' : 'pointer',
-            fontSize: added ? 14 : 20, display:'flex', alignItems:'center', justifyContent:'center',
-            transition:'background .2s, transform .15s',
-            transform: added ? 'scale(1.15)' : 'scale(1)',
-            lineHeight:1,
-          }}>
-            {added ? '✓' : '+'}
-          </button>
+          {qty > 0 ? (
+            <div className="product-qty-stepper" onClick={e => { e.preventDefault(); e.stopPropagation() }} aria-label={`${product.name} quantity in cart`}>
+              <button type="button" onClick={handleDecrease} aria-label={`Decrease ${product.name} quantity`}>-</button>
+              <span className="product-qty-value">{qty}</span>
+              <button type="button" onClick={handleAdd} disabled={isAtStockLimit} aria-label={`Increase ${product.name} quantity`}>+</button>
+            </div>
+          ) : (
+            <button type="button" onClick={handleAdd} disabled={product.stock === 0} className="product-add-btn" aria-label={`Add ${product.name} to cart`}>
+              +
+            </button>
+          )}
         </div>
       </div>
     </Link>

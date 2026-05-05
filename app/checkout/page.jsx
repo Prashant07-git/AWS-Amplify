@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { formatINR } from '@/lib/format-money'
 
 function loadRazorpayScript() {
   return new Promise((resolve) => {
@@ -222,7 +223,7 @@ export default function CheckoutPage() {
           {items.map(item => (
             <div key={item.id} style={{ display:'flex', justifyContent:'space-between', padding:'8px 0', borderBottom:'1px solid #f0f0f0', fontSize:13 }}>
               <span style={{ color:'#1c1c1a' }}>{item.name} x{item.qty}</span>
-              <span style={{ fontWeight:500 }}>₹{Number(item.price) * item.qty}</span>
+              <span style={{ fontWeight:500 }}>{formatINR(Number(item.price) * item.qty)}</span>
             </div>
           ))}
 
@@ -233,7 +234,7 @@ export default function CheckoutPage() {
 
           <div style={{ display:'flex', justifyContent:'space-between', marginTop:8, paddingTop:12, borderTop:'2px solid #2d5016' }}>
             <span style={{ fontWeight:600, fontSize:15 }}>Total</span>
-            <span style={{ fontFamily:'Playfair Display,serif', fontSize:22, fontWeight:700, color:'#2d5016' }}>₹{total}</span>
+            <span style={{ fontFamily:'Playfair Display,serif', fontSize:22, fontWeight:700, color:'#2d5016' }}>{formatINR(total)}</span>
           </div>
 
           {error && (
@@ -248,7 +249,7 @@ export default function CheckoutPage() {
             padding:'14px', fontSize:15, fontWeight:600,
             cursor: loading ? 'not-allowed' : 'pointer', transition:'background .2s',
           }}>
-            {loading ? '⏳ Opening payment...' : `Pay ₹${total} securely`}
+            {loading ? 'Opening payment...' : `Pay ${formatINR(total)} securely`}
           </button>
 
           <div style={{ textAlign:'center', marginTop:10, fontSize:11, color:'#aaa' }}>

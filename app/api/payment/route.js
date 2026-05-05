@@ -13,10 +13,10 @@ export async function POST(request) {
       }, { status: 500 })
     }
 
-    // Validate minimum amount (100 paise = ₹1)
+    // Validate minimum amount (100 paise = INR 1)
     const amountPaise = Math.round(amount * 100)
     if (amountPaise < 100) {
-      return NextResponse.json({ error: 'Minimum order amount is ₹1' }, { status: 400 })
+      return NextResponse.json({ error: 'Minimum order amount is INR 1' }, { status: 400 })
     }
 
     const razorpay = new Razorpay({

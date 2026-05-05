@@ -1,6 +1,7 @@
 'use client'
 import { Suspense, useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
+import { formatINR } from '@/lib/format-money'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
@@ -95,7 +96,7 @@ function OrdersContent() {
                     {order.status}
                   </span>
                   <span style={{ fontFamily:'Playfair Display,serif', fontSize:18, fontWeight:700, color:'#2d5016' }}>
-                    Rs.{order.total}
+                    {formatINR(order.total)}
                   </span>
                 </div>
               </div>

@@ -1,5 +1,6 @@
 'use client'
 import { useCartStore } from '@/lib/cart-store'
+import { formatINR } from '@/lib/format-money'
 import Link from 'next/link'
 
 export default function CartDrawer({ open, onClose }) {
@@ -8,6 +9,11 @@ export default function CartDrawer({ open, onClose }) {
   const updateQty    = useCartStore(s => s.updateQty)
   const getTotal     = useCartStore(s => s.getTotal)
   const total        = getTotal()
+
+  function isAtStockLimit(item) {
+    const maxQty = Number(item.stock)
+    return maxQty > 0 && item.qty >= maxQty
+  }
 
   return (
     <>
@@ -40,11 +46,11 @@ export default function CartDrawer({ open, onClose }) {
                 <div style={{ fontSize:12, color:'#6b6b60' }}>{item.unit}</div>
                 <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginTop:8 }}>
                   <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                    <button onClick={() => updateQty(item.id, item.qty - 1)} style={{ width:24, height:24, borderRadius:'50%', border:'1px solid #ddd', background:'#fff', cursor:'pointer', fontSize:14, lineHeight:1 }}>−</button>
+                    <button onClick={() => updateQty(item.id, item.qty - 1)} style={{ width:24, height:24, borderRadius:'50%', border:'1px solid #ddd', background:'#fff', cursor:'pointer', fontSize:14, lineHeight:1 }}>-</button>
                     <span style={{ fontSize:14, fontWeight:500, minWidth:20, textAlign:'center' }}>{item.qty}</span>
-                    <button onClick={() => updateQty(item.id, item.qty + 1)} style={{ width:24, height:24, borderRadius:'50%', border:'none', background:'#2d5016', color:'#fff', cursor:'pointer', fontSize:14, lineHeight:1 }}>+</button>
+                    <button onClick={() => updateQty(item.id, item.qty + 1)} disabled={isAtStockLimit(item)} style={{ width:24, height:24, borderRadius:'50%', border:'none', background:'#2d5016', color:'#fff', cursor: isAtStockLimit(item) ? 'not-allowed' : 'pointer', opacity: isAtStockLimit(item) ? .45 : 1, fontSize:14, lineHeight:1 }}>+</button>
                   </div>
-                  <span style={{ fontFamily:'Playfair Display,serif', fontWeight:600, fontSize:15 }}>₹{Number(item.price) * item.qty}</span>
+                  <span style={{ fontFamily:'Playfair Display,serif', fontWeight:600, fontSize:15 }}>{formatINR(Number(item.price) * item.qty)}</span>
                 </div>
               </div>
               <button onClick={() => removeItem(item.id)} style={{ background:'none', border:'none', cursor:'pointer', color:'#bbb', fontSize:16, alignSelf:'flex-start', padding:0 }}>×</button>
@@ -56,7 +62,7 @@ export default function CartDrawer({ open, onClose }) {
           <div style={{ padding:'16px 24px', borderTop:'1px solid rgba(0,0,0,0.08)' }}>
             <div style={{ display:'flex', justifyContent:'space-between', marginBottom:14, fontSize:16, fontWeight:500 }}>
               <span>Total</span>
-              <span style={{ fontFamily:'Playfair Display,serif', fontSize:20 }}>₹{total}</span>
+              <span style={{ fontFamily:'Playfair Display,serif', fontSize:20 }}>{formatINR(total)}</span>
             </div>
             <Link href="/checkout" onClick={onClose} style={{
               display:'block', width:'100%', background:'#2d5016', color:'#fff',

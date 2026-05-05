@@ -1,5 +1,6 @@
 'use client'
 import { useEffect, useRef, useState } from 'react'
+import { formatINR } from '@/lib/format-money'
 
 const STATUS_OPTIONS = ['pending','paid','processing','dispatched','delivered','cancelled']
 const STATUS_COLORS  = {
@@ -106,11 +107,11 @@ export default function AdminPage() {
       const newOrders = nextOrders.filter(order => !knownOrderIds.current.has(order.id))
       if (newOrders.length > 0) {
         const latestOrder = newOrders[0]
-        setLiveAlert(`New order received: #${latestOrder.id.slice(0, 8).toUpperCase()} for Rs.${latestOrder.total}`)
+        setLiveAlert(`New order received: #${latestOrder.id.slice(0, 8).toUpperCase()} for ${formatINR(latestOrder.total)}`)
 
         if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
           new Notification('New R-R-Organic order', {
-            body: `Order #${latestOrder.id.slice(0, 8).toUpperCase()} for Rs.${latestOrder.total}`,
+            body: `Order #${latestOrder.id.slice(0, 8).toUpperCase()} for ${formatINR(latestOrder.total)}`,
           })
         }
       }
@@ -328,7 +329,7 @@ export default function AdminPage() {
                             {order.order_items?.map(i => `${i.name}x${i.qty}`).join(', ')}
                           </div>
                         </td>
-                        <td style={tdStyle}><strong>Rs.{order.total}</strong></td>
+                        <td style={tdStyle}><strong>{formatINR(order.total)}</strong></td>
                         <td style={tdStyle}>
                           <span style={{
                             background: STATUS_COLORS[order.status] + '22',
@@ -366,7 +367,7 @@ export default function AdminPage() {
                         <div style={{ fontSize:11, color:'#6b6b60' }}>{p.unit}</div>
                       </td>
                       <td style={tdStyle}><span style={{ fontSize:12, color:'#6b6b60' }}>{p.categories?.name}</span></td>
-                      <td style={tdStyle}><strong>Rs.{p.price}</strong></td>
+                      <td style={tdStyle}><strong>{formatINR(p.price)}</strong></td>
                       <td style={tdStyle}>
                         <span style={{ color: p.stock < 5 ? '#e24b4a' : '#2d5016', fontWeight:500 }}>{p.stock}</span>
                       </td>
@@ -390,7 +391,7 @@ export default function AdminPage() {
               <div className="admin-form-grid" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:14 }}>
                 {[
                   { key:'name',        label:'Product name',   placeholder:'e.g. Fresh Spinach' },
-                  { key:'price',       label:'Price (Rs.)',    placeholder:'e.g. 45',    type:'number' },
+                  { key:'price',       label:'Price (INR)',    placeholder:'e.g. 45',    type:'number' },
                   { key:'unit',        label:'Unit',          placeholder:'e.g. per 500g' },
                   { key:'stock',       label:'Stock qty',     placeholder:'e.g. 50',    type:'number' },
                 ].map(f => (
